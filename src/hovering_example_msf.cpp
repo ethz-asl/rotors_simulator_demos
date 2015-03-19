@@ -23,7 +23,7 @@
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
-#include <mav_msgs/CommandTrajectory.h>
+#include <mav_msgs/CommandTrajectoryPositionYaw.h>
 #include <sensor_fusion_comm/InitScale.h>
 
 int main(int argc, char** argv){
@@ -65,7 +65,7 @@ int main(int argc, char** argv){
     ros::Duration(5.0).sleep();
   }
     
-  mav_msgs::CommandTrajectory trajectory_msg;
+  mav_msgs::CommandTrajectoryPositionYaw trajectory_msg;
   nh.param<double>("wp_x", trajectory_msg.position.x, 0.0);
   nh.param<double>("wp_y", trajectory_msg.position.y, 0.0);
   nh.param<double>("wp_z", trajectory_msg.position.z, 1.0);
