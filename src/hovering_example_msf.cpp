@@ -23,13 +23,15 @@
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
-#include <mav_msgs/CommandTrajectoryPositionYaw.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <sensor_fusion_comm/InitScale.h>
+#include <mav_msgs/default_topics.h>
 
 int main(int argc, char** argv){
   ros::init(argc, argv, "hovering_example");
   ros::NodeHandle nh;
-  ros::Publisher trajectory_pub = nh.advertise<mav_msgs::CommandTrajectoryPositionYaw>("command/trajectory_position_yaw", 10);
+  ros::Publisher trajectory_pub = nh.advertise<geometry_msgs::PoseStamped>(
+      mav_msgs::default_topics::COMMAND_POSE, 10);
   ROS_INFO("Started hovering example.");
 
   std_srvs::Empty srv;
@@ -59,22 +61,22 @@ int main(int argc, char** argv){
   sensor_fusion_comm::InitScale srv_init;
   srv_init.request.scale = 1;
   bool msf_ok = ros::service::call("msf/pose_sensor/initialize_msf_scale", srv_init);
-    
+
   if(msf_ok) {
     // Wait for 5 seconds to let msf settle.
     ros::Duration(5.0).sleep();
   }
-    
-  mav_msgs::CommandTrajectoryPositionYaw trajectory_msg;
-  nh.param<double>("wp_x", trajectory_msg.position.x, 0.0);
-  nh.param<double>("wp_y", trajectory_msg.position.y, 0.0);
-  nh.param<double>("wp_z", trajectory_msg.position.z, 1.0);
+
+  geometry_msgs::PoseStamped pose_msg;
+  nh.param<double>("wp_x", pose_msg.pose.position.x, 0.0);
+  nh.param<double>("wp_y", pose_msg.pose.position.y, 0.0);
+  nh.param<double>("wp_z", pose_msg.pose.position.z, 1.0);
   ROS_INFO("Publishing waypoint on namespace %s: [%f, %f, %f].",
            nh.getNamespace().c_str(),
-           trajectory_msg.position.x,
-           trajectory_msg.position.y,
-           trajectory_msg.position.z);
-  trajectory_msg.header.stamp = ros::Time::now();
-  trajectory_pub.publish(trajectory_msg);
+           pose_msg.pose.position.x,
+           pose_msg.pose.position.y,
+           pose_msg.pose.position.z);
+  pose_msg.header.stamp = ros::Time::now();
+  trajectory_pub.publish(pose_msg);
   ros::Duration(1.0).sleep();
 }
