@@ -15,7 +15,7 @@ catkin_package(
     sensor_fusion_comm
 )
 
-#include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 
 add_executable(hovering_example_msf src/hovering_example_msf.cpp)
